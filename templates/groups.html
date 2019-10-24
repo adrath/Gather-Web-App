@@ -1,0 +1,39 @@
+﻿{% extends "layout.html" %}
+
+{% block heading %}All Groups in Gather{% endblock %}
+
+{% block body %}
+<div class="col-lg-12 row">
+    <table class="table table-hover table-dark">
+        <thead>
+        <tr>
+            <th scope="col" style="display:none">Group ID</th>
+            <th scope="col">Group Name</th>
+            {% if username %}
+            <th scope="col"></th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% if groups %}
+        {% for group in groups %}
+        <tr>
+            <td style="display:none"> {{group.group_id}}</td>
+            <th scope="row"><a href="{{ url_for('group', gid=group.group_id) }}">{{group.group_name}}</a></th>
+            {% if username %}
+            <td>
+                {% if group.group_id not in user_groups %}
+                <form class="was-validated" id="addtag" action="/groups/group/join" method="post">
+                    <input type="text" hidden name="gid" value="{{group.group_id}}">
+                    <input type="submit" class="form-control is-invalid" value="Join Group"/>
+                </form>
+                {% endif %}
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

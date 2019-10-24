@@ -1,0 +1,98 @@
+﻿{% extends "layout.html" %}
+
+{% block heading %}Edit Event: {{event.title}}{% endblock %}
+
+{% block body %}
+<div class="container col-lg-12 row">
+    <form class="was-validated" id="updateEvent" action="/events/event/update?eid={{event.event_id}}" method="post">
+        <div class="form-group row">
+            <label for="eventTitle">Title</label>
+            <input type="text" class="form-control is-invalid" id="eventTitle" placeholder={{event.title}} name="title"
+                   value="{{event.title}}" required/>
+            <div class="invalid-feedback">
+                Please enter a title name
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="startDate">Start Date</label>
+            <input type="date" class="form-control is-invalid" id="startDate" name="start_date"
+                   value="{{event.start_date}}" required/>
+            <div class="invalid-feedback">
+                Please enter a date
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="startTime">Start Time</label>
+            <input type="time" class="form-control is-invalid" id="startTime" name="start_time"
+                   value="{{event.start_time}}" required/>
+            <div class="invalid-feedback">
+                Please enter a time
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="endDate">End Date</label>
+            <input type="date" class="form-control" id="endDate" value="{{event.end_date}}" name="end_date"/>
+        </div>
+
+        <div class="form-group row">
+            <label for="endTime">End Time</label>
+            <input type="time" class="form-control" id="endTime" value="{{event.end_time}}" name="end_time"/>
+        </div>
+
+        <div class="form-group row">
+            <label for="eventLocation">Event Location</label>
+            <input type="text" class="form-control is-invalid" id="eventLocation" value="{{event.location}}"
+                   name="location" required/>
+            <div class="invalid-feedback">
+                Please enter an event location
+            </div>
+        </div>
+
+        <div class="mb-3 row">
+            <label for="descriptionBox">Description</label>
+            <textarea class="form-control" id="descriptionBox" value="{{event.description}}" name="description"
+                      maxlength="500"></textarea>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+
+    </form>
+
+
+    {% if participants %}
+    <div class="col-lg-12 container row">
+        <h1>Event Participation List</h1>
+        <table class="table table-hover table-dark">
+            <thead>
+            <tr>
+                <th scope="col">Participant</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for participant in participants %}
+            <tr>
+                <th scope="row">{{participants[participant]}}</th>
+                <td>
+                    <form action="/events/event/remove_participant" method="post">
+                        <input type="text" hidden name="pid" value="{{participant}}">
+                        <input type="submit" value="Remove"/>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

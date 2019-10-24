@@ -1,0 +1,21 @@
+﻿{% extends "layout.html" %}
+
+{% block heading %}Add a New Group{% endblock %}
+
+{% block body %}
+
+<form class="was-validated" id="addgroup" action="/groups/new" method="post">
+    <div class="form-group row">
+        <label for="eventTitle">Group Name</label>
+        <input type="text" class="form-control is-invalid" id="group_name" placeholder="Group Name" name="group_name"
+               required/>
+        <button>Submit</button>
+    </div>
+
+    <!--<div class="form-group mb-3 row">
+      <label for="descriptionBox">Description</label>
+      <textarea class="form-control" id="descriptionBox" placeholder="Description Here" name="description" maxlength="500"></textarea>
+    </div>-->
+</form>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+﻿{% extends "layout.html" %}
+
+{% block heading %}Tags{% endblock %}
+
+{% block body %}
+
+{% if username %}
+<form class="was-validated" id="addtag" action="/tags/new" method="post">
+    <div class="form-group row">
+        <label>Create a new tag</label>
+        <input type="text" class="form-control is-invalid" id="group_name" placeholder="New Tag Name"
+               name="tag_name"
+               required/>
+        <button>Submit</button>
+    </div>
+</form>
+{% endif %}
+
+<ul>
+    {% if tags %}
+    {% for tag in tags %}
+    <li><a href="{{ url_for('tag', tag=tag.tag_name) }}">{{tag.tag_name}}</a></li>
+    {% endfor %}
+    {% endif %}
+</ul>
+{% endblock %}

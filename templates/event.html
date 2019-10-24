@@ -1,0 +1,134 @@
+﻿{% extends "layout.html" %}
+
+{% block heading %}{{ event.title }}{% endblock %}
+
+{% block body %}
+<div class="col-lg-12 row">
+    <h3>Hosted by {{host.host_name}}</h3>
+    <table class="table table-hover table-dark" id="eventTable">
+        <thead>
+        <tr>
+            <th scope="col" style="display:none">Event ID</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">Start Time</th>
+            <th scope="col">Title</th>
+            <th scope="col">Location</th>
+            <th scope="col">Group Name</th>
+            <th scope="col">Description</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if event %}
+        <tr>
+            <td style="display:none"> {{event.event_id}}</td>
+            <th scope="row">{{event.start_date}}</th>
+            <td>{{event.start_time}}</td>
+            <td>{{event.title}}</td>
+            <td>{{event.location}}</td>
+            <td><a href="{{ url_for('group', gid=event.group_id) }}">{{event.group_name}}</a></td>
+            <td>{{event.description}}</td>
+            {% if username != host.host_name and user_id not in participants %}
+            <td>
+                <form action="/events/event/join" method="post">
+                    <input type="text" hidden name="eid" value="{{event.event_id}}">
+                    <input type="submit" value="Join Event"/>
+                </form>
+            </td>
+            {% endif %}
+            {% if username == host.host_name %}
+            <td>
+                <a class="btn btn-primary" role="button"
+                   href="{{ url_for('updateEvent', eid=event.event_id) }}">Edit</a></td>
+            <td>
+                <form action="/events/event/delete" method="post">
+                    <input type="text" hidden name="eid" value="{{event.event_id}}">
+                    <input type="submit" class="btn btn-primary" value="Delete Event"/>
+                </form>
+            </td>
+            {% endif %}
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<br><br>
+
+<div class="col-lg-12 container">
+
+    {% if username == host.host_name or user_id in participants %}
+    <div class="container">
+        <form class="was-validated" id="events/event" action="{{ url_for('event', eid=event.event_id) }}" method="post">
+            <div class="form-group">
+                <label for="tagChoice">Tags</label>
+                <select class="custom-select" name="tag_name" id="tagChoice">
+                    {% for tag in tags %}
+                    <option value="{{tag.tag_name}}">{{tag.tag_name}}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+    {% if eventTags %}
+
+    <br>
+
+    <table class="table table-hover table-dark" id="eventTable">
+        <thead>
+        <tr>
+            <th scope="col">Tags</th>
+            {% if username == host.host_name or user_id in participants %}
+            <th scope="col"></th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for tag in eventTags %}
+        <tr>
+            <th scope="row"><a class="btn btn-outline-primary btn-small" href="{{ url_for('tag', tag=tag.tag_name) }}">{{tag.tag_name}}</a>
+            </th>
+            {% if username == host.host_name or user_id in participants %}
+            <td>
+                <form action="/events/event/tag/delete" method="post">
+                    <input type="text" hidden name="eid" value="{{event.event_id}}">
+                    <input type="text" hidden name="tag_name" value="{{tag.tag_name}}">
+                    <input type="submit" value="Remove Tag"/>
+                </form>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+
+
+{% if participants %}
+<h4>Participants: </h4>
+<ul>
+    {% for pid in participants %}
+    <li>
+        {{ participants[pid] }}
+        {% if username == host.host_name %}
+        <form action="/events/event/participant/delete" method="post">
+            <input type="text" hidden name="eid" value="{{event.event_id}}">
+            <input type="text" hidden name="pid" value="{{pid}}">
+            <input type="submit" value="Remove Participant"/>
+        </form>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No participants yet for this event</p>
+{% endif %}
+
+
+</div>
+{% endblock %}
